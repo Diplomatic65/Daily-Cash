@@ -1,14 +1,19 @@
+import 'package:daily_cash/src/features/auth/controllers/auth_controller.dart';
+import 'package:daily_cash/src/features/pages/screens/home/home_page.dart';
 import 'package:daily_cash/src/shared/custom_buttons.dart';
 import 'package:daily_cash/src/utils/colors.dart';
 import 'package:daily_cash/src/utils/images.dart';
 import 'package:daily_cash/src/utils/sizes.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class LoginAdmin extends StatelessWidget {
-  const LoginAdmin({super.key});
+class LoginUser extends StatelessWidget {
+  const LoginUser({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final authController = Get.find<AuthController>();
     return Scaffold(
       body: ListView(
         children: [
@@ -58,7 +63,7 @@ class LoginAdmin extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
                     TextFormField(
-                      // controller: authController.emailController,
+                      controller: authController.emailController,
                       decoration: InputDecoration(
                         hintText: 'Your Email',
                         hintStyle: TextStyle(
@@ -90,7 +95,7 @@ class LoginAdmin extends StatelessWidget {
                         )),
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 24),
 
                     Text(
                       "Password",
@@ -100,38 +105,58 @@ class LoginAdmin extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    TextFormField(
-                      // controller: authController.emailController,
-                      decoration: InputDecoration(
-                        hintText: 'Your Password',
-                        hintStyle: TextStyle(
-                          fontSize: AppSizes.md,
-                          color: Colors.grey,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
-                          borderSide: const BorderSide(
-                            color: AppColors.primaryColor,
+                    GetBuilder<AuthController>(
+                      builder: (controller) {
+                        return TextFormField(
+                          controller: authController.passwordController,
+                          obscureText: !authController
+                              .isPasswordVisible
+                              .value, // Toggle password visibility
+                          decoration: InputDecoration(
+                            hintText: 'Your Password',
+                            hintStyle: TextStyle(
+                              fontSize: AppSizes.md,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold,
+                            ),
+
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: const BorderSide(
+                                color: AppColors.primaryColor,
+                              ),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: const BorderSide(
+                                color: AppColors.primaryColor,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: const BorderSide(
+                                color: AppColors.primaryColor,
+                              ),
+                            ),
+                            prefixIcon: (Icon(
+                              Icons.lock,
+                              color: AppColors.primaryColor,
+                            )),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                authController.isPasswordVisible.value
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                                color: AppColors.primaryColor,
+                              ),
+                              onPressed: () {
+                                controller
+                                    .togglePasswordVisibility(); // Toggle visibility using controller
+                              },
+                            ),
                           ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
-                          borderSide: const BorderSide(
-                            color: AppColors.primaryColor,
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15),
-                          borderSide: const BorderSide(
-                            color: AppColors.primaryColor,
-                          ),
-                        ),
-                        prefixIcon: (Icon(
-                          Icons.lock,
-                          color: AppColors.primaryColor,
-                        )),
-                      ),
+                        );
+                      },
                     ),
                     const SizedBox(height: 24),
                     SizedBox(
@@ -140,15 +165,15 @@ class LoginAdmin extends StatelessWidget {
                       child: CustomButtons(
                         text: "Login",
                         onTap: () async {
-                          // await authController
-                          //     .loginAdmin(); // Corrected method name
-                          // // Check if token is saved and navigate accordingly
-                          // SharedPreferences prefs =
-                          //     await SharedPreferences.getInstance();
-                          // String? token = prefs.getString('token');
-                          // if (token != null) {
-                          //   Get.offAll(() => GetStudent());
-                          // }
+                          await authController
+                              .loginUser(); // Corrected method name
+                          // Check if token is saved and navigate accordingly
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          String? token = prefs.getString('token');
+                          if (token != null) {
+                            Get.offAll(() => HomePage());
+                          }
                         },
                       ),
                     ),
