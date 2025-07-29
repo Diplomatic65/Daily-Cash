@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:daily_cash/src/data/services/api_client.dart';
 import 'package:daily_cash/src/features/auth/controllers/auth_controller.dart';
+import 'package:daily_cash/src/features/auth/screens/login_user.dart';
 import 'package:daily_cash/src/features/pages/screens/home/home_page.dart';
 import 'package:daily_cash/src/features/pages/screens/profile/add_waiter.dart';
 import 'package:daily_cash/src/features/pages/screens/profile/widget/profile_widget.dart';
@@ -348,7 +349,15 @@ class _WaiterProfileState extends State<WaiterProfile> {
                       GestureDetector(
                         onTap: () async {
                           // await authController.logoutAdmin();
-                          Get.offAllNamed('/login'); // Redirect to login page
+
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          await prefs.remove('token');
+                          await prefs.remove('userId');
+                          authController.currentUserId.value = '';
+                          authController.fullname.value = '';
+                          authController.email.value = '';
+                          Get.offAll(() => LoginUser());
                         },
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,

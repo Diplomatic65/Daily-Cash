@@ -7,6 +7,42 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiClient {
+  static Future<Map<String, dynamic>?> signupUser({
+    required String fullname,
+    required String email,
+    required String phone,
+    required String password,
+  }) async {
+    final url = Uri.parse('${ApiConstants.userEndpoint}/signup');
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          "fullname": fullname,
+          "email": email,
+          "phone": phone,
+          "password": password,
+        }),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final data = jsonDecode(response.body);
+        if (data['success'] == true) {
+          return data;
+        } else {
+          throw Exception(data['message'] ?? 'Signup failed');
+        }
+      } else {
+        throw Exception('Server Error: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Signup error: $e');
+      return null;
+    }
+  }
+
   static Future<Map<String, dynamic>?> login({
     required String email,
     required String password,

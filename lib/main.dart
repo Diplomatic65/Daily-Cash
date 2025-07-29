@@ -17,7 +17,7 @@ void main() async {
   print("🎯 Token at startup: $token");
 
   runApp(MyApp(token: token));
-} 
+}
 
 class MyApp extends StatelessWidget {
   final String? token;
@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.light, //
       debugShowCheckedModeBanner: false,
       home: token != null ? HomePage() : LoginUser(),
-      // home: GetStudent(),
+      // home: LoginUser(),
     );
   }
 }

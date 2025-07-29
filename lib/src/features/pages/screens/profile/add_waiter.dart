@@ -1,4 +1,5 @@
 import 'package:daily_cash/src/features/auth/controllers/auth_controller.dart';
+import 'package:daily_cash/src/features/auth/screens/login_user.dart';
 import 'package:daily_cash/src/features/pages/screens/home/home_page.dart';
 import 'package:daily_cash/src/features/pages/screens/waiters/get_waiter.dart';
 import 'package:daily_cash/src/features/pages/screens/waiters/waiter_form.dart';
@@ -10,6 +11,7 @@ import 'package:daily_cash/src/utils/sizes.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AddWaiter extends StatefulWidget {
   const AddWaiter({super.key});
@@ -47,7 +49,7 @@ class _AddWaiterState extends State<AddWaiter> {
           : Colors.white,
 
       appBar: CustomAppBar(
-        title: "All Waiters",
+        title: "Add New Waiter",
         onNotificationTap: () {
           // Handle notification tap
         },
@@ -359,44 +361,47 @@ class _AddWaiterState extends State<AddWaiter> {
                       height: 46,
                       width: double.infinity,
                       child: CustomButtons(
-                        text: "SignUp",
+                        text: "Add Waiter",
                         onTap: () async {
-                          // bool success = await authController.signupAdmin();
+                          await authController.signupUser();
 
-                          // if (success) {
-                          //   authController.clearSignupFields();
-                          //   Get.offAll(() => LoginAdmin());
-                          // } else {
-                          //   print('Signup failed, not navigating.');
-                          // }
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          String? name = prefs.getString('fullname');
+
+                          if (name != null && name.isNotEmpty) {
+                            Get.offAll(
+                              () => LoginUser(),
+                            ); // ama HomePage haddii ay ku habboon tahay
+                          }
                         },
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 15),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Already have an account?",
-                      style: TextStyle(fontSize: AppSizes.md),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        // Get.to(() => LoginAdmin());
-                      },
-                      child: const Text(
-                        'Login',
-                        style: TextStyle(
-                          fontSize: AppSizes.lg,
-                          color: AppColors.primaryColor,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                // const SizedBox(height: 15),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.center,
+                //   children: [
+                //     Text(
+                //       "Already have an account?",
+                //       style: TextStyle(fontSize: AppSizes.md),
+                //     ),
+                //     TextButton(
+                //       onPressed: () {
+                //         // Get.to(() => LoginAdmin());
+                //       },
+                //       child: const Text(
+                //         'Login',
+                //         style: TextStyle(
+                //           fontSize: AppSizes.lg,
+                //           color: AppColors.primaryColor,
+                //           fontWeight: FontWeight.bold,
+                //         ),
+                //       ),
+                //     ),
+                //   ],
+                // ),
               ],
             ),
           ),

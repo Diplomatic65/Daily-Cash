@@ -9,6 +9,7 @@ class AuthController extends GetxController {
 
   var fullname = ''.obs; // Add this to hold the fullname
   var email = ''.obs; // Add this to hold the email
+  var phone = ''.obs; // Add this to hold the phone
   final isLoading = false.obs;
   final isLoggedIn = false.obs;
   final currentUserId = ''.obs; // Si aad ugu kaydiso user ID login kadib
@@ -36,6 +37,51 @@ class AuthController extends GetxController {
     if (userId != null && userId.isNotEmpty) {
       currentUserId.value = userId;
     }
+  }
+
+  Future<void> signupUser() async {
+    final result = await ApiClient.signupUser(
+      fullname: fullnameController.text.trim(),
+      email: emailController.text.trim(),
+      phone: phoneController.text.trim(),
+      password: passwordController.text.trim(),
+    );
+
+    if (result != null && result['success']) {
+      final prefs = await SharedPreferences.getInstance();
+      final userData = result['result'];
+
+      fullname.value = userData['fullname'];
+      email.value = userData['email'];
+      phone.value = userData['phone'];
+
+      await prefs.setString('fullname', fullname.value);
+      await prefs.setString('email', email.value);
+      await prefs.setString('phone', phone.value);
+
+      Get.snackbar(
+        'Success',
+        result['message'] ?? 'Signup Success!',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } else {
+      Get.snackbar(
+        'Error',
+        'Failed to create account. Please try again.',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red.withOpacity(0.7),
+        colorText: Colors.white,
+      );
+    }
+  }
+
+  @override
+  void onClose() {
+    fullnameController.dispose();
+    emailController.dispose();
+    phoneController.dispose();
+    passwordController.dispose();
+    super.onClose();
   }
 
   Future<void> loginUser() async {

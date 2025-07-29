@@ -2,6 +2,7 @@ import 'package:daily_cash/src/features/auth/controllers/auth_controller.dart';
 import 'package:daily_cash/src/features/pages/screens/home/widget/hand_card.dart';
 import 'package:daily_cash/src/features/pages/screens/home/widget/info_card.dart';
 import 'package:daily_cash/src/features/pages/screens/home/widget/payment_card.dart';
+import 'package:daily_cash/src/features/pages/screens/profile/add_waiter.dart';
 import 'package:daily_cash/src/features/pages/screens/profile/waiter_profile.dart';
 import 'package:daily_cash/src/features/pages/screens/waiters/get_waiter.dart';
 import 'package:daily_cash/src/features/pages/screens/waiters/waiter_form.dart';
@@ -204,10 +205,7 @@ class _HomePageState extends State<HomePage> {
               title: const Text('Add New Waiter'),
               leading: const Icon(Icons.admin_panel_settings),
               onTap: () {
-                // Get.to(
-                //   () => const AddAdmin(),
-                // ); // Replace with actual Add Admin Screen
-                // Navigate to Add New Admin Screen
+                Get.to(() => const AddWaiter());
               },
             ),
             ListTile(
