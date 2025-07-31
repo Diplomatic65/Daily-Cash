@@ -1,5 +1,6 @@
 import 'package:daily_cash/src/features/auth/controllers/auth_controller.dart';
 import 'package:daily_cash/src/features/auth/screens/login_user.dart';
+import 'package:daily_cash/src/features/pages/controllers/transaction_waiter_controller.dart';
 import 'package:daily_cash/src/features/pages/screens/home/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,6 +11,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   Get.put(AuthController());
+  Get.put(TransactionWaiterController());
   // Get.put(PostController());
 
   SharedPreferences prefs = await SharedPreferences.getInstance();

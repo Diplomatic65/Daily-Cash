@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:daily_cash/src/data/services/api_client.dart';
 import 'package:daily_cash/src/features/pages/screens/home/home_page.dart';
 import 'package:flutter/material.dart';
@@ -131,5 +133,41 @@ class AuthController extends GetxController {
     await prefs.remove('userId');
     currentUserId.value = '';
     fullname.value = ''; // ✅
+  }
+
+  Future<void> loadUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+    String? userEmail = prefs.getString('email');
+
+    if (token != null && userEmail != null) {
+      try {
+        final response = await ApiClient.getAdUserProfile(token);
+        if (response.statusCode == 200) {
+          final responseData = jsonDecode(response.body);
+          final users = responseData['data'] as List;
+
+          final currentUser = users.firstWhere(
+            (user) => user['email'] == userEmail,
+            orElse: () => null,
+          );
+
+          if (currentUser != null) {
+            fullname.value = currentUser['fullname'] ?? 'Unknown';
+            email.value =
+                currentUser['email'] ??
+                'unknown@example.com'; // ✅ email sidoo kale
+          } else {
+            Get.snackbar('Error', 'User not found');
+          }
+        } else {
+          Get.snackbar('Error', 'Failed to load user data');
+        }
+      } catch (e) {
+        Get.snackbar('Error', 'Error: $e');
+      }
+    } else {
+      Get.snackbar('Error', 'Login data missing. Please login again.');
+    }
   }
 }
