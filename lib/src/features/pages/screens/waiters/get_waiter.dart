@@ -225,14 +225,14 @@ class _GetWaiterState extends State<GetWaiter> {
                   return const Center(child: CircularProgressIndicator());
                 }
 
-                if (waiterController.posts.isEmpty) {
+                if (waiterController.transactions.isEmpty) {
                   return const Center(child: Text('No waiters found.'));
                 }
 
                 return ListView.builder(
-                  itemCount: waiterController.posts.length,
+                  itemCount: waiterController.transactions.length,
                   itemBuilder: (context, index) {
-                    final waiter = waiterController.posts[index];
+                    final waiter = waiterController.transactions[index];
                     return Card(
                       elevation: 2,
                       // margin: const EdgeInsets.symmetric(vertical: 8),

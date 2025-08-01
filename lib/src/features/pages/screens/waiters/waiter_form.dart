@@ -27,6 +27,21 @@ class _WaiterFormState extends State<WaiterForm> {
   // To track total amount:
   double totalAmount = 0.0;
 
+  var waiterName = ''.obs;
+  final TextEditingController waiterNameController = TextEditingController();
+
+  void init() {
+    waiterNameController.addListener(() {
+      waiterName.value = waiterNameController.text;
+    });
+  }
+
+  @override
+  void dispose() {
+    transactionWaiterController.dispose();
+    super.dispose();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -47,18 +62,18 @@ class _WaiterFormState extends State<WaiterForm> {
     _calculateTotal();
   }
 
-  @override
-  void dispose() {
-    // Dispose all controllers owned by transactionWaiterController
-    transactionWaiterController.merchantController.dispose();
-    transactionWaiterController.premierController.dispose();
-    transactionWaiterController.edahabController.dispose();
-    transactionWaiterController.ebesaController.dispose();
-    transactionWaiterController.othersController.dispose();
-    transactionWaiterController.creditController.dispose();
-    transactionWaiterController.promotionController.dispose();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   // Dispose all controllers owned by transactionWaiterController
+  //   transactionWaiterController.merchantController.dispose();
+  //   transactionWaiterController.premierController.dispose();
+  //   transactionWaiterController.edahabController.dispose();
+  //   transactionWaiterController.ebesaController.dispose();
+  //   transactionWaiterController.othersController.dispose();
+  //   transactionWaiterController.creditController.dispose();
+  //   transactionWaiterController.promotionController.dispose();
+  //   super.dispose();
+  // }
 
   void _calculateTotal() {
     double total = 0.0;
@@ -105,7 +120,8 @@ class _WaiterFormState extends State<WaiterForm> {
 
   @override
   Widget build(BuildContext context) {
-    // Map your labels to their respective controllers in the TransactionWaiterController
+    final controller = Get.find<TransactionWaiterController>();
+
     final Map<String, TextEditingController> controllerMap = {
       "merchant": transactionWaiterController.merchantController,
       "premier": transactionWaiterController.premierController,
@@ -262,9 +278,11 @@ class _WaiterFormState extends State<WaiterForm> {
           ],
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 12.0),
-        child: SingleChildScrollView(
+      body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 12.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -298,18 +316,21 @@ class _WaiterFormState extends State<WaiterForm> {
                   // Data Row with nested Table for inputs
                   TableRow(
                     children: [
-                      const Padding(
+                      Padding(
                         padding: EdgeInsets.symmetric(
                           horizontal: 8.0,
                           vertical: 110,
                         ),
-                        child: Text(
-                          'Faadumo Sweety',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
+                        child: Obx(() {
+                          final name = controller.waiterName.value;
+                          return Text(
+                            name.isNotEmpty ? name : 'Waiter Name',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          );
+                        }),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -368,6 +389,172 @@ class _WaiterFormState extends State<WaiterForm> {
                   ),
                 ],
               ),
+
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Obx(() {
+                    return ElevatedButton.icon(
+                      onPressed: transactionWaiterController.isLoading.value
+                          ? null
+                          : () async {
+                              await transactionWaiterController
+                                  .createWaiterTransaction();
+                              Get.off(() => const GetWaiter());
+                              _calculateTotal(); // optional
+                            },
+
+                      icon: const Icon(
+                        Icons.save,
+                        color: AppColors.primaryColor,
+                      ),
+                      label: transactionWaiterController.isLoading.value
+                          ? const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : const Text(
+                              'Save',
+                              style: TextStyle(color: AppColors.primaryColor),
+                            ),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 12,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    );
+                  }),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 10,
+                      horizontal: 16,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade200,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.grey.shade400),
+                    ),
+                    child: Text(
+                      'Total Amount: \$ ${totalAmount.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 15),
+              Table(
+                columnWidths: const {
+                  0: FixedColumnWidth(120),
+                  1: FlexColumnWidth(),
+                },
+                border: TableBorder.all(color: Colors.grey.shade300),
+                children: [
+                  // Header Row
+                  TableRow(
+                    decoration: BoxDecoration(color: Colors.grey.shade100),
+                    children: const [
+                      Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(
+                          'Waiter Name',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(
+                          'Cash Receipt',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ],
+                  ),
+                  // Data Row with nested Table for inputs
+                  TableRow(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 8.0,
+                          vertical: 110,
+                        ),
+                        child: Obx(() {
+                          final name = controller.waiterName.value;
+                          return Text(
+                            name.isNotEmpty ? name : 'Waiter Name',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          );
+                        }),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Table(
+                          columnWidths: const {
+                            0: FixedColumnWidth(80),
+                            1: FlexColumnWidth(),
+                          },
+                          children: controllerMap.entries.map((entry) {
+                            return TableRow(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 6,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: _getColor(entry.key),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Text(
+                                    entry.key,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: AppSizes.md,
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 4,
+                                  ),
+                                  child: TextFormField(
+                                    controller: entry.value,
+                                    keyboardType:
+                                        const TextInputType.numberWithOptions(
+                                          decimal: true,
+                                        ),
+                                    decoration: const InputDecoration(
+                                      isDense: true,
+                                      contentPadding: EdgeInsets.symmetric(
+                                        vertical: 6,
+                                        horizontal: 8,
+                                      ),
+                                      border: OutlineInputBorder(),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+
               const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

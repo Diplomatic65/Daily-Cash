@@ -30,7 +30,6 @@ class TransactionWaiterModel {
     this.updateDate,
     this.updateTime,
   });
-
   factory TransactionWaiterModel.fromJson(Map<String, dynamic> json) {
     return TransactionWaiterModel(
       id: json['_id'],
@@ -43,9 +42,12 @@ class TransactionWaiterModel {
       credit: (json['credit'] ?? 0).toDouble(),
       promotion: (json['promotion'] ?? 0).toDouble(),
       open: (json['open'] ?? 0).toDouble(),
+      createdDate: json['createdDate'],
+      createdTime: json['createdTime'],
+      updateDate: json['updateDate'],
+      updateTime: json['updateTime'],
     );
   }
-
   Map<String, dynamic> toJson() {
     return {
       'waiter': waiter,
@@ -57,6 +59,10 @@ class TransactionWaiterModel {
       'credit': credit ?? 0,
       'promotion': promotion ?? 0,
       'open': open ?? 0,
+      'createdDate': createdDate,
+      'createdTime': createdTime,
+      'updateDate': updateDate,
+      'updateTime': updateTime,
     };
   }
 }

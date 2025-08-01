@@ -16,8 +16,10 @@ class TransactionWaiterController extends GetxController {
 
   final isTransactionCreated = false.obs;
   final isLoading = false.obs;
+  var waiterName = ''.obs; // <-- Ku dar variable-kan observable
 
-  final RxList<TransactionWaiterModel> posts = <TransactionWaiterModel>[].obs;
+  final RxList<TransactionWaiterModel> transactions =
+      <TransactionWaiterModel>[].obs;
   final TransactionWaiterRepositories _transactionWaiterRepository =
       TransactionWaiterRepositories();
 
@@ -35,6 +37,10 @@ class TransactionWaiterController extends GetxController {
   }
 
   Future<void> createWaiterTransaction() async {
+    waiterNameController.addListener(() {
+      waiterName.value = waiterNameController.text;
+    });
+
     print("waiter: ${waiterNameController.text}");
     print("merchant: ${merchantController.text}");
     print("premier: ${premierController.text}");
@@ -124,7 +130,14 @@ class TransactionWaiterController extends GetxController {
       isLoading(true);
       final response = await _transactionWaiterRepository
           .fetchAllTransactions();
-      posts.assignAll(response);
+      transactions.assignAll(response);
+
+      // Haddii xogtu jirto, ka soo qaado waiter name kii ugu horreeyay
+      if (transactions.isNotEmpty) {
+        waiterName.value = transactions.first.waiter ?? '';
+      } else {
+        waiterName.value = '';
+      }
     } catch (e) {
       Get.snackbar('Error', 'Failed to fetch transactions: $e');
     } finally {
