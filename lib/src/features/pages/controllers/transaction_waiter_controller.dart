@@ -16,7 +16,8 @@ class TransactionWaiterController extends GetxController {
 
   final isTransactionCreated = false.obs;
   final isLoading = false.obs;
-  var waiterName = ''.obs; // <-- Ku dar variable-kan observable
+  var waiterName = ''.obs; // selected waiter name
+  var waiters = <String>[].obs;
 
   final RxList<TransactionWaiterModel> transactions =
       <TransactionWaiterModel>[].obs;
@@ -25,11 +26,19 @@ class TransactionWaiterController extends GetxController {
 
   final isWaiterCreated = false.obs;
   String? selectedPostId; // For update operations
-
   @override
   void onInit() {
-    fetchAllTransactions(); // Call once
+    waiterNameController.addListener(() {
+      waiterName.value = waiterNameController.text;
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      fetchAllTransactions();
+    });
     super.onInit();
+  }
+
+  double get merchantTotal {
+    return transactions.fold(0.0, (sum, item) => sum + (item.merchant ?? 0.0));
   }
 
   void setSelectedPostId(String id) {

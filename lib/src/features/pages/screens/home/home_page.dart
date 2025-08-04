@@ -1,4 +1,5 @@
 import 'package:daily_cash/src/features/auth/controllers/auth_controller.dart';
+import 'package:daily_cash/src/features/pages/controllers/transaction_waiter_controller.dart';
 import 'package:daily_cash/src/features/pages/screens/home/widget/hand_card.dart';
 import 'package:daily_cash/src/features/pages/screens/home/widget/info_card.dart';
 import 'package:daily_cash/src/features/pages/screens/home/widget/payment_card.dart';
@@ -23,6 +24,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final authController = Get.find<AuthController>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final TransactionWaiterController transactionWaiterController =
+      Get.find<TransactionWaiterController>();
   bool isDarkMode = false;
 
   void toggleTheme() {
@@ -54,10 +57,22 @@ class _HomePageState extends State<HomePage> {
   final List<int> years = List.generate(7, (index) => 2024 + index);
   final List<int> days = List.generate(30, (index) => index + 1);
 
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      transactionWaiterController.fetchAllTransactions();
+    });
+  }
+
   String selectedMonth = 'January';
   int selectedYear = 2024;
   int selectedDay = 1;
 
+  String merchant = 'Loading...';
+  String open = 'Loading...';
+  String promotion = 'Loading...';
+  String credit = 'Loading...';
   String get selectedDate =>
       '$selectedDay ${months[months.indexOf(selectedMonth)]} $selectedYear';
 
@@ -462,15 +477,18 @@ class _HomePageState extends State<HomePage> {
                 SizedBox(height: 24),
                 Row(
                   children: [
-                    Expanded(
-                      child: HandCard(
+                    Obx(() {
+                      final totalMerchant =
+                          transactionWaiterController.merchantTotal;
+                      return HandCard(
                         icon: Icons.money,
                         title: 'Cash On Hand',
-                        amount: '\$980.09',
+                        amount: '\$${totalMerchant.toStringAsFixed(2)}',
                         iconColor: Colors.green,
                         backgroundColor: Colors.green.withOpacity(0.3),
-                      ),
-                    ),
+                      );
+                    }),
+
                     const SizedBox(width: 10),
                     Expanded(
                       child: HandCard(

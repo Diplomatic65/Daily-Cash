@@ -218,7 +218,7 @@ class _GetWaiterState extends State<GetWaiter> {
             ),
             const SizedBox(height: 20),
 
-            // Student List
+            // Transaction List
             Expanded(
               child: Obx(() {
                 if (waiterController.isLoading.value) {
