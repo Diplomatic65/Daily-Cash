@@ -476,12 +476,14 @@ class _HomePageState extends State<HomePage> {
                 ),
                 SizedBox(height: 24),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
                   children: [
                     Obx(() {
                       final totalMerchant =
                           transactionWaiterController.merchantTotal;
                       return HandCard(
-                        icon: Icons.money,
+                        icon: Icons.account_balance_wallet,
                         title: 'Cash On Hand',
                         amount: '\$${totalMerchant.toStringAsFixed(2)}',
                         iconColor: Colors.green,
@@ -490,41 +492,79 @@ class _HomePageState extends State<HomePage> {
                     }),
 
                     const SizedBox(width: 10),
-                    Expanded(
-                      child: HandCard(
-                        icon: Icons.archive,
+                    Obx(() {
+                      final totalOpen = transactionWaiterController.openTotal;
+                      return HandCard(
+                        icon: Icons.receipt,
                         title: 'Open Receipt',
-                        amount: '\$1240.00',
-                        iconColor: Colors.blue,
-                        backgroundColor: Colors.blue.withOpacity(0.2),
-                      ),
-                    ),
+                        amount: '\$${totalOpen.toStringAsFixed(2)}',
+                        iconColor: Colors.purple,
+                        backgroundColor: Colors.purple.withOpacity(0.3),
+                      );
+                    }),
                   ],
                 ),
+
                 const SizedBox(height: 15),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Expanded(
-                      child: HandCard(
-                        icon: Icons.local_offer,
+                    Obx(() {
+                      final totalPromotion =
+                          transactionWaiterController.promotionTotal;
+                      return HandCard(
+                        icon: Icons.campaign,
                         title: 'Promotion',
-                        amount: '\$300.50',
-                        iconColor: Colors.orange,
-                        backgroundColor: Colors.orange.withOpacity(0.2),
-                      ),
-                    ),
+                        amount: '\$${totalPromotion.toStringAsFixed(2)}',
+                        iconColor: Colors.blue,
+                        backgroundColor: Colors.blue.withOpacity(0.2),
+                      );
+                    }),
                     const SizedBox(width: 10),
-                    Expanded(
-                      child: HandCard(
-                        icon: Icons.wallet,
+                    Obx(() {
+                      final totalCredit =
+                          transactionWaiterController.creditTotal;
+                      return HandCard(
+                        icon: Icons.campaign,
                         title: 'Credit (Deyn)',
-                        amount: '\$300.50',
+                        amount: '\$${totalCredit.toStringAsFixed(2)}',
                         iconColor: Colors.red,
                         backgroundColor: Colors.red.withOpacity(0.2),
-                      ),
-                    ),
+                      );
+                    }),
                   ],
                 ),
+                SizedBox(height: 24),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                  children: [
+                    Obx(() {
+                      final totalMerchant =
+                          transactionWaiterController.merchantTotal;
+                      return HandCard(
+                        icon: Icons.account_balance,
+                        title: 'Deposit',
+                        amount: '\$${totalMerchant.toStringAsFixed(2)}',
+                        iconColor: Colors.pink,
+                        backgroundColor: Colors.pink.withOpacity(0.3),
+                      );
+                    }),
+
+                    const SizedBox(width: 10),
+                    Obx(() {
+                      final totalOpen = transactionWaiterController.openTotal;
+                      return HandCard(
+                        icon: Icons.cancel,
+                        title: 'Cancelled',
+                        amount: '\$${totalOpen.toStringAsFixed(2)}',
+                        iconColor: Colors.orange,
+                        backgroundColor: Colors.orange.withOpacity(0.3),
+                      );
+                    }),
+                  ],
+                ),
+
                 SizedBox(height: 24),
                 Container(
                   padding: const EdgeInsets.symmetric(
@@ -541,35 +581,51 @@ class _HomePageState extends State<HomePage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          PaymentCard(
-                            iconColor: Colors.green,
-                            icon: Icons.phone_android,
-                            title: "Merchant",
-                            amount: '\$980.09',
-                          ),
-                          PaymentCard(
-                            iconColor: Colors.red,
-                            icon: Icons.account_balance_wallet,
-                            title: "Premier Bank",
-                            amount: '\$980.09',
-                          ),
+                          Obx(() {
+                            final totalMerchant =
+                                transactionWaiterController.merchantTotal;
+                            return PaymentCard(
+                              iconColor: Colors.green,
+                              icon: Icons.phone_android,
+                              title: "Merchant",
+                              amount: '\$${totalMerchant.toStringAsFixed(2)}',
+                            );
+                          }),
+                          Obx(() {
+                            final totalPremier =
+                                transactionWaiterController.premierTotal;
+                            return PaymentCard(
+                              iconColor: Colors.red,
+                              icon: Icons.account_balance_wallet,
+                              title: "Premier Bank",
+                              amount: '\$${totalPremier.toStringAsFixed(2)}',
+                            );
+                          }),
                         ],
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          PaymentCard(
-                            iconColor: Colors.pink,
-                            icon: Icons.send,
-                            title: "Edahab",
-                            amount: '\$980.09',
-                          ),
-                          PaymentCard(
-                            iconColor: Colors.brown,
-                            icon: Icons.receipt,
-                            title: "Ebesa",
-                            amount: '\$980.09',
-                          ),
+                          Obx(() {
+                            final totaledahab =
+                                transactionWaiterController.edahabTotal;
+                            return PaymentCard(
+                              iconColor: Colors.pink,
+                              icon: Icons.send,
+                              title: "Edahab",
+                              amount: '\$${totaledahab.toStringAsFixed(2)}',
+                            );
+                          }),
+                          Obx(() {
+                            final totalEBesa =
+                                transactionWaiterController.ebesaTotal;
+                            return PaymentCard(
+                              iconColor: Colors.brown,
+                              icon: Icons.receipt,
+                              title: "Ebesa",
+                              amount: '\$${totalEBesa.toStringAsFixed(2)}',
+                            );
+                          }),
                         ],
                       ),
 
@@ -582,12 +638,16 @@ class _HomePageState extends State<HomePage> {
                             title: "EvcPlus",
                             amount: '\$980.09',
                           ),
-                          PaymentCard(
-                            iconColor: Colors.deepPurple,
-                            icon: Icons.sms,
-                            title: "Cash",
-                            amount: '\$980.09',
-                          ),
+                          Obx(() {
+                            final totalOthers =
+                                transactionWaiterController.othersTotal;
+                            return PaymentCard(
+                              iconColor: Colors.deepPurple,
+                              icon: Icons.sms,
+                              title: "Cash",
+                              amount: '\$${totalOthers.toStringAsFixed(2)}',
+                            );
+                          }),
                         ],
                       ),
                     ],

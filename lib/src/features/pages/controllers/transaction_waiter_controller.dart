@@ -37,8 +37,51 @@ class TransactionWaiterController extends GetxController {
     super.onInit();
   }
 
+  //// Total caltulation for Merchant
   double get merchantTotal {
     return transactions.fold(0.0, (sum, item) => sum + (item.merchant ?? 0.0));
+  }
+
+  //// Total caltulation for Promotion
+
+  double get promotionTotal {
+    return transactions.fold(0.0, (sum, item) => sum + (item.promotion ?? 0.0));
+  }
+
+  //// Total caltulation for Open
+
+  double get openTotal {
+    return transactions.fold(0.0, (sum, item) => sum + (item.open ?? 0.0));
+  }
+
+  //// Total caltulation for Credit
+
+  double get creditTotal {
+    return transactions.fold(0.0, (sum, item) => sum + (item.credit ?? 0.0));
+  }
+
+  //// Total caltulation for Premier Bank
+
+  double get premierTotal {
+    return transactions.fold(0.0, (sum, item) => sum + (item.premier ?? 0.0));
+  }
+
+  //// Total caltulation for Edahab
+
+  double get edahabTotal {
+    return transactions.fold(0.0, (sum, item) => sum + (item.edahab ?? 0.0));
+  }
+
+  //// Total caltulation for Edahab
+
+  double get ebesaTotal {
+    return transactions.fold(0.0, (sum, item) => sum + (item.eBesa ?? 0.0));
+  }
+
+  //// Total caltulation for Edahab
+
+  double get othersTotal {
+    return transactions.fold(0.0, (sum, item) => sum + (item.others ?? 0.0));
   }
 
   void setSelectedPostId(String id) {
