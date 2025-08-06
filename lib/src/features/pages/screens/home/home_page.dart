@@ -5,6 +5,7 @@ import 'package:daily_cash/src/features/pages/screens/home/widget/info_card.dart
 import 'package:daily_cash/src/features/pages/screens/home/widget/payment_card.dart';
 import 'package:daily_cash/src/features/pages/screens/profile/add_waiter.dart';
 import 'package:daily_cash/src/features/pages/screens/profile/waiter_profile.dart';
+import 'package:daily_cash/src/features/pages/screens/reception/reception_form.dart';
 import 'package:daily_cash/src/features/pages/screens/waiters/get_waiter.dart';
 import 'package:daily_cash/src/features/pages/screens/waiters/waiter_form.dart';
 import 'package:daily_cash/src/shared/custom_appbar.dart';
@@ -167,6 +168,7 @@ class _HomePageState extends State<HomePage> {
                 // Navigate to Add Student Screen
               },
             ),
+            Divider(color: Colors.grey, thickness: 1, indent: 1, endIndent: 1),
             ListTile(
               title: const Text('Report Waiters'),
               leading: const Icon(Icons.list),
@@ -175,12 +177,6 @@ class _HomePageState extends State<HomePage> {
                 // Navigate to All Students Screen
               },
             ),
-            Divider(
-              color: Colors.grey,
-              thickness: 1,
-              indent: 16,
-              endIndent: 16,
-            ),
             ListTile(
               title: const Text('Waiters Form'),
               leading: const Icon(Icons.report),
@@ -188,18 +184,19 @@ class _HomePageState extends State<HomePage> {
                 Get.to(() => WaiterForm());
               },
             ),
+            Divider(
+              color: Colors.grey,
+              thickness: 1,
+              indent: 16,
+              endIndent: 16,
+            ),
+
             ListTile(
               title: const Text('Daily Attendance'),
               leading: const Icon(Icons.access_time),
               onTap: () {
                 // Navigate to Attendance Screen
               },
-            ),
-            Divider(
-              color: Colors.grey,
-              thickness: 1,
-              indent: 16,
-              endIndent: 16,
             ),
             ListTile(
               title: const Text('Attendance Report'),
@@ -208,6 +205,32 @@ class _HomePageState extends State<HomePage> {
                 // Navigate to Attendance Report Screen
               },
             ),
+            Divider(
+              color: Colors.grey,
+              thickness: 1,
+              indent: 16,
+              endIndent: 16,
+            ),
+            ListTile(
+              title: const Text('Reception Form'),
+              leading: const Icon(Icons.access_time),
+              onTap: () {
+                Get.to(() => ReceptionForm());
+              },
+            ),
+            ListTile(
+              title: const Text('Reception Report'),
+              leading: const Icon(Icons.picture_as_pdf),
+              onTap: () {
+                // Navigate to Reception Report Screen
+              },
+            ),
+            Divider(
+              color: Colors.grey,
+              thickness: 1,
+              indent: 16,
+              endIndent: 16,
+            ),
             ListTile(
               title: const Text('Waiter Profile'),
               leading: const Icon(Icons.account_circle),
@@ -215,19 +238,11 @@ class _HomePageState extends State<HomePage> {
                 Get.to(() => WaiterProfile());
               },
             ),
-            Divider(color: Colors.grey, thickness: 1, indent: 1, endIndent: 1),
             ListTile(
               title: const Text('Add New Waiter'),
               leading: const Icon(Icons.admin_panel_settings),
               onTap: () {
                 Get.to(() => const AddWaiter());
-              },
-            ),
-            ListTile(
-              title: const Text('Manage Class Time'),
-              leading: const Icon(Icons.schedule),
-              onTap: () {
-                // Navigate to Manage Class Time Screen
               },
             ),
           ],
