@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:daily_cash/src/features/auth/screens/login_user.dart';
+import 'package:daily_cash/src/features/pages/models/reception_model.dart';
 import 'package:daily_cash/src/features/pages/models/transaction_waiter_model.dart';
 import 'package:daily_cash/src/utils/api_constant.dart';
 import 'package:get/get.dart';
@@ -240,6 +241,43 @@ class ApiClient {
       }
     } catch (e) {
       print('Error deleting post: $e');
+      return false;
+    }
+  }
+
+  //// Create Reception Transaction
+
+  static Future<bool> createReception(ReceptionModel post) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    if (token == null) {
+      Get.snackbar('Error', 'User not logged in');
+      return false;
+    }
+
+    final url = Uri.parse('${ApiConstants.receptionEndpoint}/create-reception');
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode(post.toJson()),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return true;
+      } else {
+        final responseBody = jsonDecode(response.body);
+        String error = responseBody['message'] ?? 'Failed to create Reception';
+        Get.snackbar('Error', error);
+        return false;
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Something went wrong');
       return false;
     }
   }
